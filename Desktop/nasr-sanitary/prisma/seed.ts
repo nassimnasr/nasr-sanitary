@@ -107,19 +107,26 @@ const products = [
 ];
 
 async function main() {
-  const adminPassword = await bcrypt.hash("admin123", 10);
+  const adminEmail = process.env.ADMIN_EMAIL ?? "admin@nasrsanitary.com";
+  const adminPassword = process.env.ADMIN_PASSWORD ?? "admin123";
+
+  if (!process.env.ADMIN_PASSWORD) {
+    console.warn("WARNING: Using default admin password. Set ADMIN_PASSWORD env var for production.");
+  }
+
+  const hashedPassword = await bcrypt.hash(adminPassword, 10);
 
   await prisma.user.upsert({
-    where: { email: "admin@nasrsanitary.com" },
+    where: { email: adminEmail },
     update: {
       name: "Admin User",
       role: "admin",
-      password: adminPassword,
+      password: hashedPassword,
     },
     create: {
       name: "Admin User",
-      email: "admin@nasrsanitary.com",
-      password: adminPassword,
+      email: adminEmail,
+      password: hashedPassword,
       role: "admin",
     },
   });

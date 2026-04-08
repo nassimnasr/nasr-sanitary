@@ -111,6 +111,13 @@ type TranslationSchema = {
     manageOrders: string;
     manageUsers: string;
     salesOverview: string;
+    customer: string;
+    phone: string;
+    city: string;
+    orderId: string;
+    loadingOrders: string;
+    noOrdersFound: string;
+    updateStatus: string;
   };
   auth: {
     welcomeBack: string;
@@ -250,6 +257,13 @@ export const translations: Record<Locale, TranslationSchema> = {
       manageOrders: "Manage Orders",
       manageUsers: "Manage Users",
       salesOverview: "Sales Overview",
+      customer: "Customer",
+      phone: "Phone",
+      city: "City",
+      orderId: "Order ID",
+      loadingOrders: "Loading orders...",
+      noOrdersFound: "No orders found.",
+      updateStatus: "Update Status",
     },
     auth: {
       welcomeBack: "Welcome Back",
@@ -387,6 +401,13 @@ export const translations: Record<Locale, TranslationSchema> = {
       manageOrders: "إدارة الطلبات",
       manageUsers: "إدارة المستخدمين",
       salesOverview: "نظرة عامة على المبيعات",
+      customer: "العميل",
+      phone: "الهاتف",
+      city: "المدينة",
+      orderId: "رقم الطلب",
+      loadingOrders: "جاري تحميل الطلبات...",
+      noOrdersFound: "لا توجد طلبات.",
+      updateStatus: "تحديث الحالة",
     },
     auth: {
       welcomeBack: "مرحبًا بعودتك",

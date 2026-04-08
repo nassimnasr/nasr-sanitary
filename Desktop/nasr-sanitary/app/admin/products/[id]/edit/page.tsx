@@ -53,7 +53,7 @@ export default function EditProductPage() {
       setError(null);
 
       try {
-        const response = await fetch(`/api/admin/products?id=${productId}`);
+        const response = await fetch(`/api/admin/products/${productId}`);
         if (!response.ok) throw new Error("Product not found");
         const data = (await response.json()) as ProductDetails;
         setProduct(data);
@@ -109,7 +109,7 @@ export default function EditProductPage() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`/api/admin/products?id=${productId}`, {
+      const response = await fetch(`/api/admin/products/${productId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -197,12 +197,19 @@ export default function EditProductPage() {
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block text-sm font-medium text-slate-700">
             Category
-            <input
+            <select
               value={form.category}
               onChange={(event) => setForm((prev) => ({ ...prev, category: event.target.value }))}
               className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm outline-none ring-sky-500 focus:ring-2"
               required
-            />
+            >
+              <option value="">Select a category</option>
+              <option value="pipes">Pipes</option>
+              <option value="fittings">Fittings</option>
+              <option value="valves">Valves</option>
+              <option value="taps">Taps</option>
+              <option value="showers">Showers</option>
+            </select>
           </label>
           <label className="block text-sm font-medium text-slate-700">
             Image URL

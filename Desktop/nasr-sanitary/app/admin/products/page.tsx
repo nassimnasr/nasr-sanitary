@@ -51,7 +51,7 @@ export default function AdminProductsPage() {
     }
 
     try {
-      const response = await fetch(`/api/admin/products?id=${id}`, {
+      const response = await fetch(`/api/admin/products/${id}`, {
         method: "DELETE",
       });
       if (!response.ok) {
@@ -114,7 +114,7 @@ export default function AdminProductsPage() {
                 <tr key={product.id} className="border-t border-slate-200 hover:bg-slate-50">
                   <td className="px-5 py-4 font-medium text-slate-800">{product.nameEn}</td>
                   <td className="px-5 py-4 text-slate-600">{product.category}</td>
-                  <td className="px-5 py-4 text-slate-600">EGP {product.price.toLocaleString()}</td>
+                  <td className="px-5 py-4 text-slate-600">$ {product.price.toLocaleString()}</td>
                   <td className="px-5 py-4 text-slate-600">{product.stock}</td>
                   <td className="px-5 py-4 text-slate-600">
                     {new Date(product.createdAt).toLocaleDateString()}

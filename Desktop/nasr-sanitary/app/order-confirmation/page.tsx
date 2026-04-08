@@ -2,15 +2,44 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useLanguage } from "@/app/components/LanguageProvider";
+
+type OrderDetails = {
+  total: number;
+  status: string;
+};
 
 export default function OrderConfirmationPage() {
   const searchParams = useSearchParams();
   const { locale, dictionary } = useLanguage();
 
   const orderId = searchParams.get("orderId") ?? "-";
-  const total = searchParams.get("total") ?? "0";
-  const status = searchParams.get("status") ?? "pending";
+  const [order, setOrder] = useState<OrderDetails | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (!orderId || orderId === "-") return;
+
+    async function loadOrder() {
+      try {
+        const response = await fetch(`/api/orders/${orderId}`);
+        if (response.ok) {
+          const data = (await response.json()) as OrderDetails;
+          setOrder(data);
+        }
+      } catch {
+        // Fall back to URL params on error
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadOrder();
+  }, [orderId]);
+
+  const total = order?.total ?? 0;
+  const status = order?.status ?? searchParams.get("status") ?? "pending";
 
   return (
     <div className="mx-auto w-full max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
@@ -29,7 +58,7 @@ export default function OrderConfirmationPage() {
           </p>
           <p>
             <span className="font-semibold text-slate-900">{dictionary.orders.orderTotal}:</span>{" "}
-            EGP {Number(total).toLocaleString()}
+            {isLoading ? "..." : `$ ${total.toLocaleString()}`}
           </p>
           <p>
             <span className="font-semibold text-slate-900">{dictionary.orders.orderStatus}:</span>{" "}

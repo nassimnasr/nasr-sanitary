@@ -50,9 +50,17 @@ export default function Footer() {
             {dictionary.footer.contact}
           </h4>
           <ul className="mt-3 space-y-2 text-sm text-slate-600">
-            <li>Phone: +20 100 000 0000</li>
-            <li>Email: sales@nasrsanitary.com</li>
-            <li>Cairo, Egypt</li>
+            <li>
+              <a href="tel:+96179197888" className="hover:text-slate-900">
+                Phone: +961 79 197 888
+              </a>
+            </li>
+            <li>
+              <a href="mailto:sales@nasrsanitary.com" className="hover:text-slate-900">
+                Email: sales@nasrsanitary.com
+              </a>
+            </li>
+            <li>Tripoli, Lebanon</li>
           </ul>
         </div>
       </div>

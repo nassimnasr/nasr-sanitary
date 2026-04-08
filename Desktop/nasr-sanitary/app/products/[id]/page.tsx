@@ -126,7 +126,7 @@ export default function ProductDetailsPage() {
           <p className="mt-4 text-sm leading-7 text-slate-600">{localizedDescription}</p>
 
           <p className="mt-6 text-3xl font-extrabold text-slate-900">
-            EGP {product.price.toLocaleString()}
+            $ {product.price.toLocaleString()}
           </p>
           <p className={`mt-3 text-sm font-semibold ${inStock ? "text-emerald-700" : "text-red-600"}`}>
             {inStock ? dictionary.products.inStock : dictionary.products.outOfStock}

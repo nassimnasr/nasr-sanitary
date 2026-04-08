@@ -20,7 +20,7 @@ export default async function AdminPage() {
     },
     {
       label: "Total Revenue",
-      value: `EGP ${totalRevenue.toLocaleString()}`,
+      value: `$ ${totalRevenue.toLocaleString()}`,
       highlight: "Revenue",
     },
     {

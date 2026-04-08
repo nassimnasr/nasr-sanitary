@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { useLanguage } from "@/app/components/LanguageProvider";
 import { useCartStore } from "@/lib/store";
@@ -9,6 +10,12 @@ import { signOut, useSession } from "next-auth/react";
 export default function Navbar() {
   const { locale, setLocale, dictionary } = useLanguage();
   const itemCount = useCartStore((state) => state.itemCount());
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const { data: session, status } = useSession();
   const isAuthenticated = status === "authenticated";
 
@@ -88,9 +95,11 @@ export default function Navbar() {
             aria-label={dictionary.nav.cart}
           >
             <ShoppingCartIcon className="h-5 w-5" />
-            <span className="absolute -right-2 -top-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-sky-600 px-1 text-[10px] font-bold text-white">
-              {itemCount}
-            </span>
+            {mounted && itemCount > 0 ? (
+              <span className="absolute -right-2 -top-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-sky-600 px-1 text-[10px] font-bold text-white">
+                {itemCount}
+              </span>
+            ) : null}
           </Link>
 
           {isAuthenticated ? (

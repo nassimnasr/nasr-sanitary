@@ -30,6 +30,16 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const lebaneseCities = [
+    "Tripoli",
+    "Beirut",
+    "Sidon",
+    "Tyre",
+    "Jounieh",
+    "Zahle",
+    "Baalbek",
+  ];
+
   const isValid = useMemo(() => {
     return (
       form.fullName.trim() &&
@@ -61,9 +71,10 @@ export default function CheckoutPage() {
         }),
       });
 
-      const result = (await response.json()) as
-        | { orderId: string; total: number; status: string }
-        | { error: string };
+      const text = await response.text();
+      const result = text.trim()
+        ? JSON.parse(text)
+        : { error: locale === "ar" ? "الاستجابة من الخادم فارغة" : "Empty server response" };
 
       if (!response.ok || !("orderId" in result)) {
         throw new Error(
@@ -118,6 +129,7 @@ export default function CheckoutPage() {
               {dictionary.checkout.phone}
               <input
                 required
+                placeholder="+961 79 197 888"
                 value={form.phone}
                 onChange={(e) => setForm((prev) => ({ ...prev, phone: e.target.value }))}
                 className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none ring-sky-500 focus:ring-2"
@@ -128,18 +140,26 @@ export default function CheckoutPage() {
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="text-sm font-medium text-slate-700">
               {dictionary.checkout.city}
-              <input
+              <select
                 required
                 value={form.city}
                 onChange={(e) => setForm((prev) => ({ ...prev, city: e.target.value }))}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none ring-sky-500 focus:ring-2"
-              />
+                className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none ring-sky-500 focus:ring-2"
+              >
+                <option value="">Select city</option>
+                {lebaneseCities.map((city) => (
+                  <option key={city} value={city}>
+                    {city}
+                  </option>
+                ))}
+              </select>
             </label>
 
             <label className="text-sm font-medium text-slate-700">
               {dictionary.checkout.address}
               <input
                 required
+                placeholder="Al Mina, Tripoli"
                 value={form.address}
                 onChange={(e) => setForm((prev) => ({ ...prev, address: e.target.value }))}
                 className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none ring-sky-500 focus:ring-2"
@@ -183,7 +203,7 @@ export default function CheckoutPage() {
                   {locale === "ar" ? item.nameAr : item.nameEn} x {item.quantity}
                 </p>
                 <p className="font-semibold text-slate-900">
-                  EGP {(item.price * item.quantity).toLocaleString()}
+                  $ {(item.price * item.quantity).toLocaleString()}
                 </p>
               </div>
             ))}
@@ -192,7 +212,7 @@ export default function CheckoutPage() {
           <div className="mt-5 border-t border-slate-200 pt-4 text-sm">
             <p className="flex items-center justify-between font-bold text-slate-900">
               <span>{dictionary.common.total}</span>
-              <span>EGP {total.toLocaleString()}</span>
+              <span>$ {total.toLocaleString()}</span>
             </p>
           </div>
         </aside>

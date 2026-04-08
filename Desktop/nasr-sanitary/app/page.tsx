@@ -2,44 +2,22 @@
 
 import { SparklesIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useLanguage } from "@/app/components/LanguageProvider";
 import { useCartStore } from "@/lib/store";
 
-const featuredProducts = [
-  {
-    id: "p-001",
-    productNumber: "NS-1001",
-    nameEn: "Luxury Sink Mixer",
-    nameAr: "خلاط حوض فاخر",
-    color: "Chrome",
-    brandName: "AquaLine",
-    price: 1899,
-    image:
-      "https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&w=900&q=80",
-  },
-  {
-    id: "p-002",
-    productNumber: "NS-1002",
-    nameEn: "Rain Shower Set",
-    nameAr: "طقم دش مطري",
-    color: "Matte Black",
-    brandName: "HydroPro",
-    price: 3290,
-    image:
-      "https://images.unsplash.com/photo-1631049035616-7f5a8a58d06f?auto=format&fit=crop&w=900&q=80",
-  },
-  {
-    id: "p-003",
-    productNumber: "NS-1003",
-    nameEn: "Ceramic Basin",
-    nameAr: "حوض سيراميك",
-    color: "White",
-    brandName: "PureCeram",
-    price: 1450,
-    image:
-      "https://images.unsplash.com/photo-1629079447777-1e605162dc8d?auto=format&fit=crop&w=900&q=80",
-  },
-];
+type Product = {
+  id: string;
+  nameEn: string;
+  nameAr: string;
+  descEn: string;
+  descAr: string;
+  price: number;
+  stock: number;
+  image: string | null;
+  category: string;
+  createdAt: string;
+};
 
 const categories = [
   {
@@ -65,6 +43,48 @@ const categories = [
 export default function Home() {
   const { locale, dictionary } = useLanguage();
   const addToCart = useCartStore((state) => state.addToCart);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadFeaturedProducts() {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await fetch("/api/products");
+        if (!response.ok) {
+          throw new Error("Failed to load products");
+        }
+        const data = (await response.json()) as Product[];
+        if (mounted) {
+          setFeaturedProducts(data.slice(0, 3));
+        }
+      } catch (err) {
+        if (mounted) {
+          setError(
+            err instanceof Error
+              ? err.message
+              : locale === "ar"
+                ? "فشل تحميل المنتجات"
+                : "Failed to load products"
+          );
+        }
+      } finally {
+        if (mounted) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    loadFeaturedProducts();
+    return () => {
+      mounted = false;
+    };
+  }, [locale]);
 
   return (
     <div className="w-full">
@@ -137,49 +157,76 @@ export default function Home() {
           </Link>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {featuredProducts.map((product) => (
-            <article
-              key={product.id}
-              className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
-            >
-              <img
-                src={product.image}
-                alt={locale === "ar" ? product.nameAr : product.nameEn}
-                className="h-52 w-full object-cover"
-              />
-              <div className="p-5">
-                <p className="text-xs font-semibold uppercase tracking-wide text-sky-700">
-                  {product.productNumber}
-                </p>
-                <h3 className="mt-1 text-lg font-bold text-slate-900">
-                  {locale === "ar" ? product.nameAr : product.nameEn}
-                </h3>
-                <p className="mt-1 text-sm text-slate-600">
-                  {dictionary.products.brand}: {product.brandName}
-                </p>
-                <p className="text-sm text-slate-600">
-                  {dictionary.products.color}: {product.color}
-                </p>
-                <div className="mt-4 flex items-center justify-between">
-                  <p className="text-lg font-bold text-slate-900">
-                    EGP {product.price.toLocaleString()}
+          {isLoading ? (
+            <div className="col-span-full rounded-2xl border border-slate-200 bg-white p-10 text-center text-slate-600">
+              {dictionary.common.loading}
+            </div>
+          ) : error ? (
+            <div className="col-span-full rounded-2xl border border-red-200 bg-red-50 p-10 text-center text-red-700">
+              {error}
+            </div>
+          ) : featuredProducts.length === 0 ? (
+            <div className="col-span-full rounded-2xl border border-slate-200 bg-white p-10 text-center text-slate-600">
+              {locale === "ar" ? "لا توجد منتجات متاحة" : "No products available"}
+            </div>
+          ) : (
+            featuredProducts.map((product) => (
+              <article
+                key={product.id}
+                className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+              >
+                {product.image ? (
+                  <img
+                    src={product.image}
+                    alt={locale === "ar" ? product.nameAr : product.nameEn}
+                    className="h-52 w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-52 items-center justify-center bg-slate-100 text-sm text-slate-500">
+                    {locale === "ar" ? "لا توجد صورة" : "No image"}
+                  </div>
+                )}
+                <div className="p-5">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-sky-700">
+                    {product.category}
                   </p>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      addToCart({
-                        ...product,
-                        stock: 50,
-                      })
-                    }
-                    className="rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white transition hover:bg-slate-800"
-                  >
-                    {dictionary.products.addToCart}
-                  </button>
+                  <h3 className="mt-1 text-lg font-bold text-slate-900">
+                    {locale === "ar" ? product.nameAr : product.nameEn}
+                  </h3>
+                  <p className="mt-1 text-sm text-slate-600">
+                    {dictionary.products.category}: {product.category}
+                  </p>
+                  <div className="mt-4 flex items-center justify-between">
+                    <p className="text-lg font-bold text-slate-900">
+                      $ {product.price.toLocaleString()}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        addToCart({
+                          id: product.id,
+                          productNumber: `NS-${product.id.slice(-6).toUpperCase()}`,
+                          nameEn: product.nameEn,
+                          nameAr: product.nameAr,
+                          image: product.image,
+                          price: product.price,
+                          color: "Standard",
+                          brandName: product.category,
+                          stock: product.stock,
+                        })
+                      }
+                      disabled={product.stock <= 0}
+                      className="rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+                    >
+                      {product.stock > 0
+                        ? dictionary.products.addToCart
+                        : dictionary.products.outOfStock}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            ))
+          )}
         </div>
       </section>
 

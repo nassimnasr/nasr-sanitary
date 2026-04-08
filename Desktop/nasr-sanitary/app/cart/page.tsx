@@ -88,8 +88,7 @@ export default function CartPage() {
 
                   <div className="text-right">
                     <p className="text-sm text-slate-500">
-                      {dictionary.common.subtotal}: EGP{" "}
-                      {(item.price * item.quantity).toLocaleString()}
+                      {dictionary.common.subtotal}: $ {(item.price * item.quantity).toLocaleString()}
                     </p>
                     <button
                       type="button"
@@ -111,7 +110,7 @@ export default function CartPage() {
           <div className="mt-4 space-y-2 text-sm text-slate-600">
             <p>
               {dictionary.common.total}:{" "}
-              <span className="font-bold text-slate-900">EGP {total.toLocaleString()}</span>
+              <span className="font-bold text-slate-900">$ {total.toLocaleString()}</span>
             </p>
             <p>{dictionary.cart.codNotice}</p>
           </div>
