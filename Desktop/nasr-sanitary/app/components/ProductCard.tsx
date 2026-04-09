@@ -14,6 +14,7 @@ export type ProductListItem = {
   stock: number;
   image: string | null;
   category: string;
+  brand: string;
   createdAt: string;
 };
 
@@ -37,7 +38,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       image: product.image,
       price: product.price,
       color: "Standard",
-      brandName: product.category,
+      brandName: product.brand,
       stock: product.stock,
     });
   };
@@ -58,13 +59,16 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       <div className="p-5">
         <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-sky-700">
-          {product.category}
+          {product.brand}
         </p>
         <Link href={`/products/${product.id}`}>
           <h3 className="text-lg font-bold text-slate-900 hover:text-sky-700">
             {localizedName}
           </h3>
         </Link>
+        <p className="mt-1 text-sm text-slate-500">
+          {dictionary.products.category}: {product.category}
+        </p>
         <p className="mt-3 text-lg font-bold text-slate-900">
           $ {product.price.toLocaleString()}
         </p>

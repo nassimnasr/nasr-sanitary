@@ -9,6 +9,8 @@ interface AdminProduct {
   nameEn: string;
   nameAr: string;
   category: string;
+  brand: string;
+  color: string;
   price: number;
   stock: number;
   createdAt: string;
@@ -83,6 +85,8 @@ export default function AdminProductsPage() {
           <thead className="bg-slate-50 text-slate-500">
             <tr>
               <th className="px-5 py-4 font-semibold">Name (EN)</th>
+              <th className="px-5 py-4 font-semibold">Brand</th>
+              <th className="px-5 py-4 font-semibold">Color</th>
               <th className="px-5 py-4 font-semibold">Category</th>
               <th className="px-5 py-4 font-semibold">Price</th>
               <th className="px-5 py-4 font-semibold">Stock</th>
@@ -93,19 +97,19 @@ export default function AdminProductsPage() {
           <tbody>
             {isLoading ? (
               <tr className="border-t border-slate-200">
-                <td colSpan={6} className="px-5 py-8 text-center text-slate-500">
+                <td colSpan={8} className="px-5 py-8 text-center text-slate-500">
                   Loading products...
                 </td>
               </tr>
             ) : error ? (
               <tr className="border-t border-slate-200">
-                <td colSpan={6} className="px-5 py-8 text-center text-red-600">
+                <td colSpan={8} className="px-5 py-8 text-center text-red-600">
                   {error}
                 </td>
               </tr>
             ) : products.length === 0 ? (
               <tr className="border-t border-slate-200">
-                <td colSpan={6} className="px-5 py-8 text-center text-slate-500">
+                <td colSpan={8} className="px-5 py-8 text-center text-slate-500">
                   No products found.
                 </td>
               </tr>
@@ -113,6 +117,8 @@ export default function AdminProductsPage() {
               products.map((product) => (
                 <tr key={product.id} className="border-t border-slate-200 hover:bg-slate-50">
                   <td className="px-5 py-4 font-medium text-slate-800">{product.nameEn}</td>
+                  <td className="px-5 py-4 text-slate-600">{product.brand}</td>
+                  <td className="px-5 py-4 text-slate-600">{product.color}</td>
                   <td className="px-5 py-4 text-slate-600">{product.category}</td>
                   <td className="px-5 py-4 text-slate-600">$ {product.price.toLocaleString()}</td>
                   <td className="px-5 py-4 text-slate-600">{product.stock}</td>

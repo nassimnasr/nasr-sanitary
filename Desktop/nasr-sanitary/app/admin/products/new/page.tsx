@@ -11,6 +11,8 @@ type ProductFormState = {
   price: string;
   stock: string;
   category: string;
+  brand: string;
+  color: string;
   image: string;
 };
 
@@ -24,6 +26,8 @@ export default function NewProductPage() {
     price: "",
     stock: "",
     category: "",
+    brand: "",
+    color: "",
     image: "",
   });
   const [error, setError] = useState<string | null>(null);
@@ -42,7 +46,9 @@ export default function NewProductPage() {
       price: parseFloat(form.price),
       stock: parseInt(form.stock, 10),
       category: form.category.trim(),
-      image: form.image.trim(),
+      brand: form.brand.trim() || "Generic",
+      color: form.color.trim() || "Standard",
+      image: form.image.trim() || null,
     };
 
     if (
@@ -70,11 +76,12 @@ export default function NewProductPage() {
 
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data?.error || "Unable to create product");
+        throw new Error(data?.error || `API Error: ${response.status}`);
       }
 
       router.push("/admin/products");
     } catch (err) {
+      console.error("Product creation error:", err);
       setError(err instanceof Error ? err.message : "Unable to create product.");
     } finally {
       setIsSubmitting(false);
@@ -146,13 +153,36 @@ export default function NewProductPage() {
               required
             >
               <option value="">Select a category</option>
-              <option value="pipes">Pipes</option>
-              <option value="fittings">Fittings</option>
-              <option value="valves">Valves</option>
-              <option value="taps">Taps</option>
-              <option value="showers">Showers</option>
+              <option value="shower">Shower / Douche</option>
+              <option value="bath_mixer">Bath Mixer</option>
+              <option value="kitchen_mixer">Kitchen Mixer</option>
+              <option value="basin_mixer">Basin Mixer</option>
+              <option value="valve">Valve</option>
+              <option value="tap">Tap</option>
+              <option value="sink">Sink</option>
             </select>
           </label>
+          <label className="block text-sm font-medium text-slate-700">
+            Brand
+            <input
+              value={form.brand}
+              onChange={(event) => setForm((prev) => ({ ...prev, brand: event.target.value }))}
+              placeholder="Grohe, Hansgrohe, etc."
+              className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm outline-none ring-sky-500 focus:ring-2"
+            />
+          </label>
+          <label className="block text-sm font-medium text-slate-700">
+            Color
+            <input
+              value={form.color}
+              onChange={(event) => setForm((prev) => ({ ...prev, color: event.target.value }))}
+              placeholder="Chrome, Stainless Steel, etc."
+              className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm outline-none ring-sky-500 focus:ring-2"
+            />
+          </label>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
           <label className="block text-sm font-medium text-slate-700">
             Image URL
             <input

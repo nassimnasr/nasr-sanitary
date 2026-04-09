@@ -28,16 +28,23 @@ const LanguageContext = createContext<LanguageContextType | null>(null);
 const STORAGE_KEY = "nasr-sanitary-locale";
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(() => {
-    if (typeof window === "undefined") return defaultLocale;
+  const [locale, setLocaleState] = useState<Locale>(defaultLocale);
+  const [mounted, setMounted] = useState(false);
 
+  useEffect(() => {
+    // Initialize locale from localStorage or navigator after hydration
     const savedLocale = localStorage.getItem(STORAGE_KEY) as Locale | null;
+    let detectedLocale: Locale = defaultLocale;
+
     if (savedLocale === "en" || savedLocale === "ar") {
-      return savedLocale;
+      detectedLocale = savedLocale;
+    } else {
+      detectedLocale = navigator.language.toLowerCase().startsWith("ar") ? "ar" : "en";
     }
 
-    return navigator.language.toLowerCase().startsWith("ar") ? "ar" : "en";
-  });
+    setLocaleState(detectedLocale);
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const direction = getDirection(locale);

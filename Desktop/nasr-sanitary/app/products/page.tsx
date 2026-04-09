@@ -46,6 +46,22 @@ export default function ProductsPage() {
     return ["all", ...Array.from(unique)];
   }, [products]);
 
+  const categoryLabels: Record<string, { en: string; ar: string }> = {
+    shower: { en: "Shower / Douche", ar: "دش / دوش" },
+    bath_mixer: { en: "Bath Mixer", ar: "خلاط حمام" },
+    kitchen_mixer: { en: "Kitchen Mixer", ar: "خلاط مطبخ" },
+    basin_mixer: { en: "Basin Mixer", ar: "خلاط حوض" },
+    valve: { en: "Valve", ar: "صمام" },
+    tap: { en: "Tap", ar: "حنفية" },
+    sink: { en: "Sink", ar: "مغسلة" },
+  };
+
+  const getCategoryLabel = (value: string) => {
+    if (value === "all") return dictionary.products.allCategories;
+    const label = categoryLabels[value];
+    return label ? (locale === "ar" ? label.ar : label.en) : value;
+  };
+
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-8">
@@ -81,7 +97,7 @@ export default function ProductsPage() {
           >
             {categories.map((item) => (
               <option key={item} value={item}>
-                {item === "all" ? dictionary.products.allCategories : item}
+                {getCategoryLabel(item)}
               </option>
             ))}
           </select>

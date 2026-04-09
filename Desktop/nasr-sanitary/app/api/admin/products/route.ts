@@ -29,12 +29,27 @@ export async function POST(request: Request) {
   if (unauthorized) return unauthorized;
 
   try {
-    const body = await request.json();
-    const { nameEn, nameAr, descEn, descAr, price, stock, category, image } = body;
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+    }
 
-    const requiredFields = [nameEn, nameAr, descEn, descAr, category];
-    if (requiredFields.some(field => !field?.trim()) || typeof price !== "number" || typeof stock !== "number") {
-      return NextResponse.json({ error: "Invalid product payload" }, { status: 400 });
+    const { nameEn, nameAr, descEn, descAr, price, stock, category, brand, color, image } = body;
+
+    // Validate required fields
+    if (!nameEn?.trim() || !nameAr?.trim() || !descEn?.trim() || !descAr?.trim() || !category?.trim()) {
+      return NextResponse.json({ error: "Missing required fields: nameEn, nameAr, descEn, descAr, category" }, { status: 400 });
+    }
+
+    // Validate numeric fields
+    if (typeof price !== "number" || isNaN(price) || price < 0) {
+      return NextResponse.json({ error: "Invalid price value" }, { status: 400 });
+    }
+
+    if (typeof stock !== "number" || isNaN(stock) || stock < 0) {
+      return NextResponse.json({ error: "Invalid stock value" }, { status: 400 });
     }
 
     const product = await prisma.product.create({
@@ -46,13 +61,16 @@ export async function POST(request: Request) {
         price,
         stock,
         category: category.trim(),
-        image: image?.trim() || null,
+        brand: brand?.trim() || "Generic",
+        color: color?.trim() || "Standard",
+        image: image || null,
       },
     });
 
     return NextResponse.json(product, { status: 201 });
   } catch (error) {
-    console.error("POST /api/admin/products failed", error);
-    return NextResponse.json({ error: "Failed to create product" }, { status: 500 });
+    console.error("POST /api/admin/products error:", error);
+    const errorMessage = error instanceof Error ? error.message : "Failed to create product";
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

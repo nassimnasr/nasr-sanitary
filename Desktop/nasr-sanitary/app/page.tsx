@@ -21,22 +21,46 @@ type Product = {
 
 const categories = [
   {
-    titleEn: "Bathroom Mixers",
-    titleAr: "خلاطات الحمام",
-    descEn: "Stylish and durable mixer solutions for every sink.",
-    descAr: "حلول خلاطات أنيقة ومتينة لكل الأحواض.",
+    titleEn: "Shower / Douche",
+    titleAr: "دش / دوش",
+    descEn: "Modern shower heads and hoses for a refreshing experience.",
+    descAr: "رؤوس دش وخراطيم عصرية لتجربة منعشة.",
   },
   {
-    titleEn: "Showers & Accessories",
-    titleAr: "الدش والإكسسوارات",
-    descEn: "Modern shower sets designed for comfort and efficiency.",
-    descAr: "أطقم دش حديثة مصممة للراحة والكفاءة.",
+    titleEn: "Bath Mixer",
+    titleAr: "خلاط حمام",
+    descEn: "Stylish bath mixers for a comfortable bathing experience.",
+    descAr: "خلاطات حمام أنيقة لتجربة استحمام مريحة.",
   },
   {
-    titleEn: "Basins & Toilets",
-    titleAr: "الأحواض والمراحيض",
-    descEn: "Premium ceramics with clean design and easy maintenance.",
-    descAr: "سيراميك فاخر بتصميم أنيق وسهل الصيانة.",
+    titleEn: "Kitchen Mixer",
+    titleAr: "خلاط مطبخ",
+    descEn: "High-quality kitchen mixers for modern homes.",
+    descAr: "خلاطات مطبخ عالية الجودة للمنازل الحديثة.",
+  },
+  {
+    titleEn: "Basin Mixer",
+    titleAr: "خلاط حوض",
+    descEn: "Elegant basin mixers for bathrooms and sinks.",
+    descAr: "خلاطات حوض أنيقة للحمامات والمغاسل.",
+  },
+  {
+    titleEn: "Valve",
+    titleAr: "صمام",
+    descEn: "Reliable valves for water control and safety.",
+    descAr: "صمامات موثوقة للتحكم في المياه والأمان.",
+  },
+  {
+    titleEn: "Tap",
+    titleAr: "حنفية",
+    descEn: "Quality taps for every application.",
+    descAr: "حنفيات ذات جودة لكل التطبيقات.",
+  },
+  {
+    titleEn: "Sink",
+    titleAr: "مغسلة",
+    descEn: "Modern sinks for kitchens and bathrooms.",
+    descAr: "مغاسل عصرية للمطابخ والحمامات.",
   },
 ];
 
@@ -211,7 +235,7 @@ export default function Home() {
                           image: product.image,
                           price: product.price,
                           color: "Standard",
-                          brandName: product.category,
+                          brandName: product.brand,
                           stock: product.stock,
                         })
                       }

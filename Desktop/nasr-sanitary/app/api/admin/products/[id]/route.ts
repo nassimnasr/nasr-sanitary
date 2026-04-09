@@ -41,7 +41,7 @@ export async function PUT(request: Request, context: Params) {
   try {
     const { id } = await context.params;
     const body = await request.json();
-    const { nameEn, nameAr, descEn, descAr, price, stock, category, image } = body;
+    const { nameEn, nameAr, descEn, descAr, price, stock, category, brand, color, image } = body;
 
     const requiredFields = [nameEn, nameAr, descEn, descAr, category];
     if (
@@ -62,6 +62,8 @@ export async function PUT(request: Request, context: Params) {
         price,
         stock,
         category: category.trim(),
+        brand: brand?.trim() || "Generic",
+        color: color?.trim() || "Standard",
         image: image?.trim() || null,
       },
     });

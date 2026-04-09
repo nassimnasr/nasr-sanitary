@@ -31,6 +31,8 @@ model Product {
   price     Float
   stock     Int
   category  String
+  brand     String   @default("Generic")
+  color     String   @default("Standard")
   image     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

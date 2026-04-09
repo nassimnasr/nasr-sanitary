@@ -28,7 +28,7 @@ export default function Navbar() {
           </div>
           <div className="leading-tight">
             <p className="text-sm font-semibold text-slate-900">
-              {dictionary.common.appName}
+              {mounted ? dictionary.common.appName : "Nasr Sanitary"}
             </p>
             <p className="text-xs text-slate-500">Sanitary Solutions</p>
           </div>
@@ -92,7 +92,7 @@ export default function Navbar() {
           <Link
             href="/cart"
             className="relative inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white p-2.5 text-slate-700 hover:border-slate-300 hover:text-slate-900"
-            aria-label={dictionary.nav.cart}
+            aria-label={mounted ? dictionary.nav.cart : "Cart"}
           >
             <ShoppingCartIcon className="h-5 w-5" />
             {mounted && itemCount > 0 ? (

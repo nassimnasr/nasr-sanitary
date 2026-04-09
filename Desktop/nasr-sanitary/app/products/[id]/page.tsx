@@ -15,6 +15,7 @@ type ProductDetail = {
   stock: number;
   image: string | null;
   category: string;
+  brand: string;
 };
 
 export default function ProductDetailsPage() {
@@ -98,7 +99,7 @@ export default function ProductDetailsPage() {
         image: product.image,
         price: product.price,
         color: "Standard",
-        brandName: product.category,
+        brandName: product.brand,
         stock: product.stock,
       },
       quantity
@@ -120,9 +121,12 @@ export default function ProductDetailsPage() {
 
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-sky-700">
-            {product.category}
+            {product.brand}
           </p>
           <h1 className="mt-2 text-3xl font-bold text-slate-900">{localizedName}</h1>
+          <p className="mt-2 text-sm text-slate-500">
+            {dictionary.products.category}: {product.category}
+          </p>
           <p className="mt-4 text-sm leading-7 text-slate-600">{localizedDescription}</p>
 
           <p className="mt-6 text-3xl font-extrabold text-slate-900">

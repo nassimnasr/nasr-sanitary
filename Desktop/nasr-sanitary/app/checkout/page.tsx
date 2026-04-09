@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/app/components/LanguageProvider";
 import { useCartStore } from "@/lib/store";
@@ -19,6 +19,12 @@ export default function CheckoutPage() {
   const items = useCartStore((state) => state.items);
   const total = useCartStore((state) => state.subtotal());
   const clearCart = useCartStore((state) => state.clearCart);
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const [form, setForm] = useState<CheckoutForm>({
     fullName: "",
@@ -196,25 +202,31 @@ export default function CheckoutPage() {
 
         <aside className="h-fit rounded-2xl border border-slate-200 bg-white p-5">
           <h3 className="text-lg font-bold text-slate-900">{dictionary.checkout.orderSummary}</h3>
-          <div className="mt-4 space-y-3">
-            {items.map((item) => (
-              <div key={item.id} className="flex items-start justify-between gap-3 text-sm">
-                <p className="text-slate-700">
-                  {locale === "ar" ? item.nameAr : item.nameEn} x {item.quantity}
-                </p>
-                <p className="font-semibold text-slate-900">
-                  $ {(item.price * item.quantity).toLocaleString()}
+          {mounted ? (
+            <>
+              <div className="mt-4 space-y-3">
+                {items.map((item) => (
+                  <div key={item.id} className="flex items-start justify-between gap-3 text-sm">
+                    <p className="text-slate-700">
+                      {locale === "ar" ? item.nameAr : item.nameEn} x {item.quantity}
+                    </p>
+                    <p className="font-semibold text-slate-900">
+                      $ {(item.price * item.quantity).toLocaleString()}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-5 border-t border-slate-200 pt-4 text-sm">
+                <p className="flex items-center justify-between font-bold text-slate-900">
+                  <span>{dictionary.common.total}</span>
+                  <span>$ {total.toLocaleString()}</span>
                 </p>
               </div>
-            ))}
-          </div>
-
-          <div className="mt-5 border-t border-slate-200 pt-4 text-sm">
-            <p className="flex items-center justify-between font-bold text-slate-900">
-              <span>{dictionary.common.total}</span>
-              <span>$ {total.toLocaleString()}</span>
-            </p>
-          </div>
+            </>
+          ) : (
+            <div className="mt-4 h-24 animate-pulse bg-slate-100 rounded-lg" />
+          )}
         </aside>
       </div>
     </div>
