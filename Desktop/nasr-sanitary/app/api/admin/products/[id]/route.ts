@@ -82,6 +82,7 @@ export async function DELETE(_: Request, context: Params) {
   try {
     const { id } = await context.params;
 
+    await prisma.orderItem.deleteMany({ where: { productId: id } });
     await prisma.product.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch (error) {
