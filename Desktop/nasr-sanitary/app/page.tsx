@@ -16,6 +16,7 @@ type Product = {
   stock: number;
   image: string | null;
   category: string;
+  brand: string;
   createdAt: string;
 };
 
