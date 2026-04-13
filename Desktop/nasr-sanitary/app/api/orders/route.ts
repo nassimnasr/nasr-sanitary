@@ -72,6 +72,7 @@ export async function POST(request: Request) {
         for (const item of items) {
           const product = productMap.get(item.id);
           if (!product) {
+            console.error(`Product lookup failed for ID: ${item.id}. Available products:`, products.map(p => p.id));
             throw Object.assign(new Error(`Product not found: ${item.id}`), { code: 404 });
           }
           if (item.quantity <= 0 || product.stock < item.quantity) {
