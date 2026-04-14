@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/app/components/LanguageProvider";
@@ -10,7 +11,7 @@ type OrderDetails = {
   status: string;
 };
 
-export default function OrderConfirmationPage() {
+function OrderConfirmationContent() {
   const searchParams = useSearchParams();
   const { locale, dictionary } = useLanguage();
 
@@ -86,5 +87,13 @@ export default function OrderConfirmationPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function OrderConfirmationPage() {
+  return (
+    <Suspense fallback={<div className="mx-auto max-w-4xl p-8">Loading...</div>}>
+      <OrderConfirmationContent />
+    </Suspense>
   );
 }
