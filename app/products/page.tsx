@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import ProductCard, { type ProductListItem } from "@/app/components/ProductCard";
 import { useLanguage } from "@/app/components/LanguageProvider";
 
-export default function ProductsPage() {
+function ProductsContent() {
   const { locale, dictionary } = useLanguage();
   const searchParams = useSearchParams();
   const searchFromUrl = searchParams.get("search") ?? "";
@@ -147,5 +147,32 @@ export default function ProductsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-slate-900">Products</h1>
+      </div>
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <div key={i} className="animate-pulse rounded-2xl border border-slate-200 bg-white p-4">
+            <div className="h-48 rounded-lg bg-slate-200" />
+            <div className="mt-4 h-4 rounded bg-slate-200" />
+            <div className="mt-2 h-4 w-2/3 rounded bg-slate-200" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <ProductsContent />
+    </Suspense>
   );
 }
