@@ -15,8 +15,8 @@ type OrderDetails = {
 function OrderConfirmationContent() {
   const searchParams = useSearchParams();
   const { locale, dictionary } = useLanguage();
-  const { data: session, status } = useSession();
-  const isAuthenticated = status === "authenticated";
+  const { data: session, status: sessionStatus } = useSession();
+  const isAuthenticated = sessionStatus === "authenticated";
 
   const orderId = searchParams.get("orderId") ?? "-";
   const [order, setOrder] = useState<OrderDetails | null>(null);
