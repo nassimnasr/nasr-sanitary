@@ -26,6 +26,17 @@ export async function GET(request: Request) {
       orderBy: {
         createdAt: "desc",
       },
+      select: {
+        id: true,
+        nameEn: true,
+        nameAr: true,
+        price: true,
+        stock: true,
+        category: true,
+        brand: true,
+        color: true,
+        // Don't select image here for list view - only load when viewing single product
+      },
     });
 
     return NextResponse.json(products);
