@@ -64,11 +64,23 @@ export default function EditProductPage() {
 
     setIsUploading(true);
     try {
-      const dataUrl = await fileToDataUrl(file);
-      setForm((prev) => ({ ...prev, image: dataUrl }));
-      setImagePreview(dataUrl);
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const data = (await response.json()) as { url: string };
+      setForm((prev) => ({ ...prev, image: data.url }));
+      setImagePreview(data.url);
     } catch {
-      setError("Failed to load image");
+      setError("Failed to upload image. Make sure Cloudinary is configured.");
     } finally {
       setIsUploading(false);
     }
