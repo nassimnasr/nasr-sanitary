@@ -1,7 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
+
+function fileToDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
 type ProductDetails = {
   id: string;
@@ -35,6 +44,44 @@ export default function EditProductPage() {
   const [product, setProduct] = useState<ProductDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setError("Please select an image file");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Image must be less than 5MB");
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const dataUrl = await fileToDataUrl(file);
+      setForm((prev) => ({ ...prev, image: dataUrl }));
+      setImagePreview(dataUrl);
+    } catch {
+      setError("Failed to load image");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const clearImage = () => {
+    setForm((prev) => ({ ...prev, image: "" }));
+    setImagePreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   const [form, setForm] = useState<ProductFormState>({
     nameEn: "",
     nameAr: "",
@@ -60,6 +107,7 @@ export default function EditProductPage() {
         if (!response.ok) throw new Error("Product not found");
         const data = (await response.json()) as ProductDetails;
         setProduct(data);
+        setImagePreview(data.image ?? null);
         setForm({
           nameEn: data.nameEn,
           nameAr: data.nameAr,
@@ -231,13 +279,34 @@ export default function EditProductPage() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block text-sm font-medium text-slate-700">
-            Image URL
+            Product Image
             <input
-              value={form.image}
-              onChange={(event) => setForm((prev) => ({ ...prev, image: event.target.value }))}
-              className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm outline-none ring-sky-500 focus:ring-2"
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm outline-none ring-sky-500 focus:ring-2 file:mr-4 file:cursor-pointer file:rounded-lg file:border-0 file:bg-sky-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-sky-700 hover:file:bg-sky-200"
             />
+            {isUploading && <p className="mt-1 text-xs text-slate-500">Loading image...</p>}
           </label>
+
+          {(imagePreview || form.image) && (
+            <div className="relative mt-6 rounded-xl border border-slate-200 p-2 sm:mt-0">
+              <p className="mb-2 text-sm font-medium text-slate-700">Current Image:</p>
+              <img
+                src={imagePreview || form.image}
+                alt="Product preview"
+                className="h-32 w-full rounded-lg object-cover"
+              />
+              <button
+                type="button"
+                onClick={clearImage}
+                className="absolute right-4 top-4 rounded-full bg-red-500 px-2 py-1 text-xs text-white hover:bg-red-600"
+              >
+                ✕
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
