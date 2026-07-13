@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 type ProductFormState = {
@@ -27,54 +27,11 @@ function fileToDataUrl(file: File): Promise<string> {
 
 export default function NewProductPage() {
   const router = useRouter();
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
-
-  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      setError("Please select an image file");
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      setError("Image must be less than 5MB");
-      return;
-    }
-
-    setIsUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Upload failed");
-      }
-
-      const data = (await response.json()) as { url: string };
-      setForm((prev) => ({ ...prev, image: data.url }));
-      setImagePreview(data.url);
-    } catch {
-      setError("Failed to upload image. Make sure Cloudinary is configured.");
-    } finally {
-      setIsUploading(false);
-    }
-  };
 
   const clearImage = () => {
     setForm((prev) => ({ ...prev, image: "" }));
     setImagePreview(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
   };
 
   const [form, setForm] = useState<ProductFormState>({
@@ -243,15 +200,20 @@ export default function NewProductPage() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block text-sm font-medium text-slate-700">
-            Product Image
+            Image URL
             <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm outline-none ring-sky-500 focus:ring-2 file:mr-4 file:cursor-pointer file:rounded-lg file:border-0 file:bg-sky-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-sky-700 hover:file:bg-sky-200"
+              value={form.image}
+              onChange={(event) => {
+                const url = event.target.value;
+                setForm((prev) => ({ ...prev, image: url }));
+                setImagePreview(url || null);
+              }}
+              placeholder="https://example.com/image.jpg"
+              className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm outline-none ring-sky-500 focus:ring-2"
             />
-            {isUploading && <p className="mt-1 text-xs text-slate-500">Loading image...</p>}
+            <p className="mt-1 text-xs text-slate-500">
+              Upload your image to Google Drive, Dropbox, or Imgur, then paste the link here
+            </p>
           </label>
 
           {imagePreview && (
