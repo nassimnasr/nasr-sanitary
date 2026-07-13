@@ -56,6 +56,26 @@ export default function Footer() {
               </a>
             </li>
             <li>
+              <a
+                href="https://wa.me/9613226111"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-slate-900"
+              >
+                WhatsApp: +961 3 226 111
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.instagram.com/nasrsanitary/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-slate-900"
+              >
+                Instagram: @nasrsanitary
+              </a>
+            </li>
+            <li>
               <a href="mailto:sales@nasrsanitary.com" className="hover:text-slate-900">
                 Email: sales@nasrsanitary.com
               </a>

@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/app/components/LanguageProvider";
+import { useSession } from "next-auth/react";
 
 type OrderDetails = {
   total: number;
@@ -14,6 +15,8 @@ type OrderDetails = {
 function OrderConfirmationContent() {
   const searchParams = useSearchParams();
   const { locale, dictionary } = useLanguage();
+  const { data: session, status } = useSession();
+  const isAuthenticated = status === "authenticated";
 
   const orderId = searchParams.get("orderId") ?? "-";
   const [order, setOrder] = useState<OrderDetails | null>(null);
@@ -72,12 +75,20 @@ function OrderConfirmationContent() {
         </div>
 
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            href="/orders"
-            className="rounded-xl bg-emerald-700 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-800"
-          >
-            {dictionary.nav.orders}
-          </Link>
+          {isAuthenticated ? (
+            <Link
+              href="/orders"
+              className="rounded-xl bg-emerald-700 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-800"
+            >
+              {dictionary.nav.orders}
+            </Link>
+          ) : (
+            <p className="w-full rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">
+              {locale === "ar"
+                ? "⚠️ يرجى حفظ رقم الطلب الخاص بك لاستخدامه في المستقبل."
+                : "⚠️ Please save your order ID for future reference."}
+            </p>
+          )}
           <Link
             href="/products"
             className="rounded-xl border border-emerald-300 bg-white px-5 py-3 text-sm font-semibold text-emerald-800 hover:bg-emerald-100"
