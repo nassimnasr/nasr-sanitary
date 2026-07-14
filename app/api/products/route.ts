@@ -35,7 +35,7 @@ export async function GET(request: Request) {
         category: true,
         brand: true,
         color: true,
-        // Don't select image here for list view - only load when viewing single product
+        image: true,
       },
     });
 
