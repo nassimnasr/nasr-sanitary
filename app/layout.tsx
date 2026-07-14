@@ -17,26 +17,39 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("http://localhost:3000"),
+  metadataBase: new URL("https://nasr-sanitary.vercel.app"),
   title: {
-    default: "Nasr Sanitary | Premium Sanitary Products",
+    default: "Nasr Sanitary | Grohe Bathroom & Kitchen Products Lebanon",
     template: "%s | Nasr Sanitary",
   },
   description:
-    "Nasr Sanitary e-commerce store for premium sanitary products with cash on delivery and bilingual English/Arabic support.",
+    "Premium sanitary products in Lebanon. Grohe, Hansgrohe bathroom mixers, showers, kitchen sinks, taps. Cash on delivery across Lebanon - Tripoli, Beirut, Sidon.",
   keywords: [
+    "Grohe Lebanon",
+    "sanitary Lebanon",
+    "bathroom accessories Lebanon",
+    "kitchen mixer Lebanon",
+    "shower Lebanon",
     "Nasr Sanitary",
     "sanitary products",
+    "bathroom fixtures",
+    "cash on delivery Lebanon",
+    "Grohe dealer Lebanon",
     "bathroom accessories",
-    "e-commerce",
-    "cash on delivery",
+    "kitchen sink Lebanon",
   ],
   openGraph: {
-    title: "Nasr Sanitary",
+    title: "Nasr Sanitary | Premium Bathroom & Kitchen Products",
     description:
-      "Professional sanitary products with trusted quality and fast delivery.",
+      "Your trusted source for Grohe and premium sanitary products in Lebanon. Bathroom mixers, showers, kitchen sinks, taps with cash on delivery.",
     siteName: "Nasr Sanitary",
     type: "website",
+    locale: "en_LB",
+    alternateLocale: "ar_LB",
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
