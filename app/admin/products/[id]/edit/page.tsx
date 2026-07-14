@@ -247,11 +247,11 @@ export default function EditProductPage() {
                 setForm((prev) => ({ ...prev, image: url }));
                 setImagePreview(url || null);
               }}
-              placeholder="https://example.com/image.jpg"
+              placeholder="https://i.imgur.com/xxxxx.jpg"
               className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm outline-none ring-sky-500 focus:ring-2"
             />
             <p className="mt-1 text-xs text-slate-500">
-              Upload your image to Google Drive, Dropbox, or Imgur, then paste the link here
+              Must be a direct image link ending in .jpg or .png
             </p>
           </label>
 
